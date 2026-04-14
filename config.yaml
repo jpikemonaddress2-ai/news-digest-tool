@@ -1,0 +1,55 @@
+# 雑学ニュースダイジェスト 設定ファイル
+# このファイルを編集するだけでツールの挙動を変更できます
+
+# ---- 関心キーワード ----
+# タイトル・要約にこれらのキーワードが含まれる記事だけを収集します
+# 日本語・英語どちらでも可（大文字小文字は区別しません）
+interest_keywords:
+  - テクノロジー
+  - AI
+  - 人工知能
+  - 宇宙
+  - 科学
+  - 歴史
+  - 雑学
+  - 発見
+  - 研究
+  - ライフハック
+  - 生産性
+  - health
+  - 健康
+  - 環境
+  - 経済
+
+# ---- RSSフィード ----
+# ニュースサイト・雑学サイトのRSSフィード
+rss_feeds:
+  - name: "NHK ニュース"
+    url: "https://www.nhk.or.jp/rss/news/cat0.xml"
+  - name: "BBC News Japan"
+    url: "https://feeds.bbci.co.uk/japanese/rss.xml"
+  - name: "Gigazine"
+    url: "https://gigazine.net/news/rss_2.0/"
+  - name: "Wired Japan"
+    url: "https://wired.jp/rss/"
+  - name: "ライフハッカー"
+    url: "https://www.lifehacker.jp/feed/index.xml"
+
+# ---- 収集・フィルタ設定 ----
+delivery:
+  days_back: 1           # 何日分の記事を対象にするか（日次配信なら1）
+  min_score: 3           # ★いくつ以上の記事を配信するか（1〜5）
+  max_rss_per_feed: 20   # 1フィードあたりの最大取得件数（ニュースは更新頻度が高いので少なめ）
+
+# ---- AI要約設定 ----
+# GEMINI_API_KEY 環境変数が設定されている場合のみ日本語要約が生成されます
+# 未設定時は原文がそのまま掲載されます
+gemini_model: "gemini-2.5-flash"
+
+# ---- メール設定 ----
+# 実際のアドレスは GitHub Secrets に登録し、環境変数名だけここに書く
+email:
+  from_env: GMAIL_ADDRESS        # 送信元Gmailアドレスの環境変数名
+  password_env: GMAIL_APP_PASSWORD  # Gmailアプリパスワードの環境変数名
+  to_env: TO_ADDRESSES           # 宛先メールアドレスの環境変数名（カンマ区切りで複数可）
+  subject_prefix: "📰 雑学ニュースダイジェスト"

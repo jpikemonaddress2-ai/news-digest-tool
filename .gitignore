@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# 環境変数ファイル（絶対にコミットしないこと）
+.env
+.env.*
+
+# 出力ファイル
+output/
+
+# エディタ
+.vscode/
+.idea/
+*.swp
+.DS_Store
