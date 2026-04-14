@@ -54,9 +54,10 @@ def _parse_feed_date(entry) -> Optional[datetime]:
 def collect_rss(config: dict, since: datetime) -> list[Article]:
     """
     config.rss_feeds に列挙された全フィードから記事を収集する
-    since より新しい記事だけを返す
+    since より新しい記事だけを返す。フィード間の重複URLは除去する。
     """
     articles: list[Article] = []
+    seen_urls: set[str] = set()
     max_per_feed = config["delivery"].get("max_rss_per_feed", 20)
 
     for feed_cfg in config.get("rss_feeds", []):
@@ -85,6 +86,10 @@ def collect_rss(config: dict, since: datetime) -> list[Article]:
 
             if not title or not link:
                 continue
+
+            if link in seen_urls:
+                continue
+            seen_urls.add(link)
 
             articles.append(Article(
                 source_type="rss",

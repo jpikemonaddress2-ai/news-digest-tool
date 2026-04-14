@@ -99,7 +99,7 @@ def main() -> None:
 
     # 5. メール送信
     logger.info("--- メール送信フェーズ ---")
-    if args.dry_run:
+    if args.dry_run or args.save_html:
         logger.info("[DRY RUN] メール送信をスキップしました")
     else:
         deliver(filtered, config, total_collected)

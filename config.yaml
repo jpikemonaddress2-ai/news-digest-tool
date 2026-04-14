@@ -1,55 +1,66 @@
-# 雑学ニュースダイジェスト 設定ファイル
+# 化学業界ニュースダイジェスト 設定ファイル
 # このファイルを編集するだけでツールの挙動を変更できます
 
 # ---- 関心キーワード ----
 # タイトル・要約にこれらのキーワードが含まれる記事だけを収集します
-# 日本語・英語どちらでも可（大文字小文字は区別しません）
 interest_keywords:
-  - テクノロジー
-  - AI
-  - 人工知能
-  - 宇宙
-  - 科学
-  - 歴史
-  - 雑学
-  - 発見
-  - 研究
-  - ライフハック
-  - 生産性
-  - health
-  - 健康
-  - 環境
-  - 経済
+  # 化学業界（国内メーカー・市況）
+  - 化学メーカー
+  - 化学工業
+  - 化学品
+  - 素材
+  - 樹脂
+  - ポリマー
+  - 高分子
+  - 触媒
+  - 石化
+  - 石油化学
+  - 機能性材料
+  - 化学プラント
+  # 主要国内メーカー
+  - 信越化学
+  - 東レ
+  - 旭化成
+  - 三菱ケミカル
+  - 住友化学
+  - DIC
+  - 積水化学
+  - クラレ
+  - 東ソー
+  - 三井化学
+  # 化学×AI・DX
+  - マテリアルズインフォマティクス
+  - AI創薬
+  - 化学 AI
+  - 素材 DX
+  - スマート工場
+  - デジタル製造
 
-# ---- RSSフィード ----
-# ニュースサイト・雑学サイトのRSSフィード
+# ---- RSSフィード（Google News で日本語化学ニュースを収集）----
+# Google News RSS は化学工業日報・日経・Bloomberg等を横断して取得できる
 rss_feeds:
-  - name: "NHK ニュース"
-    url: "https://www.nhk.or.jp/rss/news/cat0.xml"
-  - name: "BBC News Japan"
-    url: "https://feeds.bbci.co.uk/japanese/rss.xml"
-  - name: "Gigazine"
-    url: "https://gigazine.net/news/rss_2.0/"
-  - name: "Wired Japan"
-    url: "https://wired.jp/rss/"
-  - name: "ライフハッカー"
-    url: "https://www.lifehacker.jp/feed/index.xml"
+  - name: "Google News：化学業界"
+    url: "https://news.google.com/rss/search?q=%E5%8C%96%E5%AD%A6+%E3%83%A1%E3%83%BC%E3%82%AB%E3%83%BC+%E6%A5%AD%E7%95%8C&hl=ja&gl=JP&ceid=JP:ja"
+  - name: "Google News：素材・高分子"
+    url: "https://news.google.com/rss/search?q=%E7%B4%A0%E6%9D%90+%E9%AB%98%E5%88%86%E5%AD%90+%E6%A8%B9%E8%84%82+%E7%9F%B3%E6%B2%B9%E5%8C%96%E5%AD%A6&hl=ja&gl=JP&ceid=JP:ja"
+  - name: "Google News：化学×AI"
+    url: "https://news.google.com/rss/search?q=%E5%8C%96%E5%AD%A6+AI+%E3%83%9E%E3%83%86%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%BA%E3%82%A4%E3%83%B3%E3%83%95%E3%82%A9%E3%83%9E%E3%83%86%E3%82%A3%E3%82%AF%E3%82%B9&hl=ja&gl=JP&ceid=JP:ja"
+  - name: "MONOist（製造業・材料技術）"
+    url: "https://rss.itmedia.co.jp/rss/2.0/monoist.xml"
 
 # ---- 収集・フィルタ設定 ----
 delivery:
-  days_back: 1           # 何日分の記事を対象にするか（日次配信なら1）
-  min_score: 3           # ★いくつ以上の記事を配信するか（1〜5）
-  max_rss_per_feed: 20   # 1フィードあたりの最大取得件数（ニュースは更新頻度が高いので少なめ）
+  days_back: 7           # 週1配信
+  min_score: 3           # ★3以上を配信
+  max_rss_per_feed: 20   # Google News は記事数が多いので少なめに
 
 # ---- AI要約設定 ----
-# GEMINI_API_KEY 環境変数が設定されている場合のみ日本語要約が生成されます
-# 未設定時は原文がそのまま掲載されます
+# GEMINI_API_KEY 環境変数が未設定の場合は原文がそのまま掲載されます（スキップ）
 gemini_model: "gemini-2.5-flash"
 
 # ---- メール設定 ----
-# 実際のアドレスは GitHub Secrets に登録し、環境変数名だけここに書く
 email:
-  from_env: GMAIL_ADDRESS        # 送信元Gmailアドレスの環境変数名
-  password_env: GMAIL_APP_PASSWORD  # Gmailアプリパスワードの環境変数名
-  to_env: TO_ADDRESSES           # 宛先メールアドレスの環境変数名（カンマ区切りで複数可）
-  subject_prefix: "📰 雑学ニュースダイジェスト"
+  from_env: GMAIL_ADDRESS
+  password_env: GMAIL_APP_PASSWORD
+  to_env: TO_ADDRESSES
+  subject_prefix: "⚗️ 化学業界ニュースダイジェスト"
