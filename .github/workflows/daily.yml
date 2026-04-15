@@ -61,13 +61,21 @@ jobs:
           TO_ADDRESSES: ${{ secrets.TO_ADDRESSES }}
         run: python src/main.py --config config.yaml --save-html output/digest.html
 
-      - name: 生成したHTMLをアップロード
+      - name: メール用HTMLをアップロード（デバッグ用）
         if: github.event_name == 'workflow_dispatch' && inputs.save_html == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: digest-html
+          name: email-html
           path: output/digest.html
           retention-days: 7
+
+      - name: 図解HTMLをアップロード（週次アーカイブ）
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest-${{ github.run_id }}
+          path: output/digest-*.html
+          retention-days: 90
 
       - name: 失敗時の通知（オプション）
         if: failure()

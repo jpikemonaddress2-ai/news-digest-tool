@@ -13,9 +13,11 @@ from pathlib import Path
 # src ディレクトリを sys.path に追加（直接実行時のため）
 sys.path.insert(0, str(Path(__file__).parent))
 
+from datetime import datetime, timezone
+
 from collect import load_config, collect_all
 from filter import run_filter
-from email_sender import deliver
+from email_sender import deliver, build_digest_html
 
 logging.basicConfig(
     level=logging.INFO,
@@ -78,22 +80,29 @@ def main() -> None:
         )
 
     total_collected = len(articles)
+    now = datetime.now(tz=timezone.utc)
+    keywords = config.get("interest_keywords", [])
 
-    # 4. HTML生成（--save-html オプション）
+    # 4. 図解HTML（詳細版）を日付付きファイルとして常時保存
+    logger.info("--- 図解HTML生成フェーズ ---")
+    digest_path = Path("output") / f"digest-{now.strftime('%Y-%m-%d')}.html"
+    digest_path.parent.mkdir(parents=True, exist_ok=True)
+    digest_html_content = build_digest_html(filtered, keywords, config, now, total_collected)
+    digest_path.write_text(digest_html_content, encoding="utf-8")
+    logger.info("図解HTMLを保存しました: %s", digest_path)
+
+    # 5. メール用HTML（--save-html オプション）
     if args.save_html:
         from email_sender import build_html, build_empty_html
-        from datetime import datetime, timezone
-        now = datetime.now(tz=timezone.utc)
         if filtered:
-            keywords = config.get("interest_keywords", [])
-            html = build_html(filtered, keywords, config, now, total_collected)
+            mail_html = build_html(filtered, keywords, config, now, total_collected)
         else:
-            html = build_empty_html(config, now, total_collected)
+            mail_html = build_empty_html(config, now, total_collected)
         Path(args.save_html).parent.mkdir(parents=True, exist_ok=True)
-        Path(args.save_html).write_text(html, encoding="utf-8")
-        logger.info("HTMLを保存しました: %s", args.save_html)
+        Path(args.save_html).write_text(mail_html, encoding="utf-8")
+        logger.info("メール用HTMLを保存しました: %s", args.save_html)
 
-    # 5. メール送信
+    # 6. メール送信
     logger.info("--- メール送信フェーズ ---")
     if args.dry_run or args.save_html:
         logger.info("[DRY RUN] メール送信をスキップしました")
