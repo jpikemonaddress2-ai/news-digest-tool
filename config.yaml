@@ -63,4 +63,4 @@ email:
   from_env: GMAIL_ADDRESS
   password_env: GMAIL_APP_PASSWORD
   to_env: TO_ADDRESSES
-  subject_prefix: "⚗️ 化学業界ニュースダイジェスト"
+  subject_prefix: "⚗️ 業界ニュースダイジェスト"
