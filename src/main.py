@@ -61,10 +61,6 @@ def main() -> None:
     logger.info("--- 情報収集フェーズ ---")
     articles = collect_all(config)
 
-    if not articles:
-        logger.warning("記事が1件も収集できませんでした。処理を終了します。")
-        sys.exit(0)
-
     # 3. フィルタリング
     logger.info("--- フィルタリングフェーズ ---")
     filtered = run_filter(articles, config)
