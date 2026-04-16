@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>特許情報ダイジェスト — 引き継ぎ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['ui-sans-serif', 'system-ui', 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    details > summary {
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+    details[open] .chevron {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-zinc-50 text-zinc-900 antialiased">
+  <!-- 関連度: ピル＋カード枠（border/ring）を ★3=緑 ★4=青 ★5=橙 で揃える。data-relevance-stars="3|4|5" -->
+  <div class="mx-auto max-w-lg px-4 py-8 pb-16 sm:px-6 sm:py-10 md:max-w-3xl">
+    <header class="mb-8">
+      <p class="text-xs font-medium uppercase tracking-wider text-zinc-500">Handoff</p>
+      <h1 class="mt-1 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
+        特許情報ダイジェスト自動配信
+      </h1>
+      <p class="mt-3 text-sm leading-relaxed text-zinc-600">
+        折りたたみでは見出しと関連度だけ表示します。関連度は <strong class="font-medium text-zinc-800">Komineko 図解のブランチタグ型ピル</strong>（淡背景＋丸ドット＋★表記）で示し、<strong class="font-medium text-zinc-800">カードの枠と展開部の上罫線</strong>も ★3=緑・★4=青・★5=橙 に合わせています。タップで要約とリンクを開けます。
+      </p>
+      <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-zinc-600">
+        <span class="flex items-center gap-1.5">
+          <span class="flex items-center gap-1 px-1.5 py-0.5 bg-green-100 rounded text-green-600">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" aria-hidden="true"></span>
+            <span>★★★</span>
+          </span>
+          <span class="text-zinc-500">関連度3</span>
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="flex items-center gap-1 px-1.5 py-0.5 bg-blue-100 rounded text-blue-600">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" aria-hidden="true"></span>
+            <span>★★★★</span>
+          </span>
+          <span class="text-zinc-500">関連度4</span>
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="flex items-center gap-1 px-1.5 py-0.5 bg-orange-100 rounded text-orange-600">
+            <span class="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" aria-hidden="true"></span>
+            <span>★★★★★</span>
+          </span>
+          <span class="text-zinc-500">関連度5</span>
+        </span>
+      </div>
+      <p class="mt-3 flex flex-wrap gap-4 text-xs text-zinc-500">
+        <span class="flex items-center gap-1 text-green-600"><span class="w-2 h-2 rounded-full bg-green-500 shrink-0" aria-hidden="true"></span>★3＝緑</span>
+        <span class="flex items-center gap-1 text-blue-600"><span class="w-2 h-2 rounded-full bg-blue-500 shrink-0" aria-hidden="true"></span>★4＝青</span>
+        <span class="flex items-center gap-1 text-orange-600"><span class="w-2 h-2 rounded-full bg-orange-500 shrink-0" aria-hidden="true"></span>★5＝橙</span>
+      </p>
+    </header>
+
+    <div class="space-y-3">
+      <!-- 1: ★4 = 青 -->
+      <details data-relevance-stars="4" class="group rounded-2xl border border-blue-200 bg-white shadow-sm ring-1 ring-blue-200/80">
+        <summary class="flex min-h-[3.5rem] cursor-pointer list-none items-start gap-3 rounded-2xl p-4 text-left outline-none ring-zinc-400 focus-visible:ring-2 md:items-center">
+          <span class="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 md:mt-0">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" />
+            </svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-semibold text-zinc-900">背景・前提</span>
+            <span class="mt-1.5 flex flex-wrap items-center gap-2 md:gap-2.5">
+              <span class="flex shrink-0 items-center gap-1 px-1.5 py-0.5 bg-blue-100 rounded text-xs text-blue-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" aria-hidden="true"></span>
+                <span>★★★★</span>
+              </span>
+              <span class="min-w-0 text-sm leading-snug text-zinc-600">完成済みの化学文献ダイジェストをテンプレに、特許版を同じ配信形で作る。</span>
+            </span>
+          </span>
+          <svg class="chevron mt-1 h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="border-t border-blue-100 px-4 pb-4 pt-2 sm:px-5 sm:pb-5">
+          <p class="text-sm leading-relaxed text-zinc-600">
+            （要約プレースホルダ）chem-digest-tool で週次メール配信まで回っている前提で、特許情報向けに収集層と要約プロンプトを差し替える方針です。
+          </p>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li>
+              <a class="font-medium text-zinc-800 underline decoration-zinc-400/60 underline-offset-2 hover:text-zinc-950" href="https://github.com/jpikemonaddress2-ai/chem-digest-tool">https://github.com/jpikemonaddress2-ai/chem-digest-tool</a>
+              <span class="block text-xs text-zinc-500">テンプレの完成リポジトリ</span>
+            </li>
+            <li>
+              <a class="font-medium text-zinc-800 underline decoration-zinc-400/60 underline-offset-2 hover:text-zinc-950" href="./digest.html">./digest.html</a>
+              <span class="block text-xs text-zinc-500">同一 output フォルダ内の別成果物への相対リンク例</span>
+            </li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- 2: ★3 = 緑 -->
+      <details data-relevance-stars="3" class="group rounded-2xl border border-green-200 bg-white shadow-sm ring-1 ring-green-200/80">
+        <summary class="flex min-h-[3.5rem] cursor-pointer list-none items-start gap-3 rounded-2xl p-4 text-left outline-none ring-zinc-400 focus-visible:ring-2 md:items-center">
+          <span class="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 md:mt-0">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-semibold text-zinc-900">テンプレのディレクトリ構成</span>
+            <span class="mt-1.5 flex flex-wrap items-center gap-2 md:gap-2.5">
+              <span class="flex shrink-0 items-center gap-1 px-1.5 py-0.5 bg-green-100 rounded text-xs text-green-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" aria-hidden="true"></span>
+                <span>★★★</span>
+              </span>
+              <span class="min-w-0 text-sm leading-snug text-zinc-600">どのファイルが役割ごとに対応するかを把握し、特許版で触る箇所を決める。</span>
+            </span>
+          </span>
+          <svg class="chevron mt-1 h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="border-t border-green-100 px-4 pb-4 pt-2 sm:px-5 sm:pb-5">
+          <p class="text-sm leading-relaxed text-zinc-600">
+            （要約プレースホルダ）config / main / collect / filter / email_sender / weekly workflow の分担。特許版では主に <code class="rounded bg-zinc-100 px-1 py-0.5 text-xs">collect.py</code> を差し替え、要約は <code class="rounded bg-zinc-100 px-1 py-0.5 text-xs">filter.py</code> 側のプロンプト調整が中心です。
+          </p>
+          <p class="mt-3 text-xs text-zinc-500">
+            （リンク枠の例）設計メモやディレクトリ図の URL をここに追加してください。
+          </p>
+        </div>
+      </details>
+
+      <!-- 3: ★3 = 緑 -->
+      <details data-relevance-stars="3" class="group rounded-2xl border border-green-200 bg-white shadow-sm ring-1 ring-green-200/80">
+        <summary class="flex min-h-[3.5rem] cursor-pointer list-none items-start gap-3 rounded-2xl p-4 text-left outline-none ring-zinc-400 focus-visible:ring-2 md:items-center">
+          <span class="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 md:mt-0">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-semibold text-zinc-900">技術スタック</span>
+            <span class="mt-1.5 flex flex-wrap items-center gap-2 md:gap-2.5">
+              <span class="flex shrink-0 items-center gap-1 px-1.5 py-0.5 bg-green-100 rounded text-xs text-green-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" aria-hidden="true"></span>
+                <span>★★★</span>
+              </span>
+              <span class="min-w-0 text-sm leading-snug text-zinc-600">特許版も Python 3.11 と RSS・GenAI・メール・Actions の組み合わせを想定。</span>
+            </span>
+          </span>
+          <svg class="chevron mt-1 h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="border-t border-green-100 px-4 pb-4 pt-2 sm:px-5 sm:pb-5">
+          <p class="text-sm leading-relaxed text-zinc-600">
+            （要約プレースホルダ）feedparser、google-genai（任意）、Gmail SMTP、GitHub Actions 週次。Gemini API キーは任意運用。
+          </p>
+          <ul class="mt-3 list-inside list-disc space-y-1 text-sm text-zinc-600">
+            <li>Python 3.11</li>
+            <li>feedparser（RSS）</li>
+            <li>google-genai（日本語要約・オプション）</li>
+            <li>Gmail SMTP / GitHub Actions</li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- 4: ★5 = 橙 -->
+      <details data-relevance-stars="5" class="group rounded-2xl border border-orange-200 bg-white shadow-sm ring-1 ring-orange-200/80">
+        <summary class="flex min-h-[3.5rem] cursor-pointer list-none items-start gap-3 rounded-2xl p-4 text-left outline-none ring-zinc-400 focus-visible:ring-2 md:items-center">
+          <span class="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 md:mt-0">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-semibold text-zinc-900">特許データのソース調査</span>
+            <span class="mt-1.5 flex flex-wrap items-center gap-2 md:gap-2.5">
+              <span class="flex shrink-0 items-center gap-1 px-1.5 py-0.5 bg-orange-100 rounded text-xs text-orange-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0" aria-hidden="true"></span>
+                <span>★★★★★</span>
+              </span>
+              <span class="min-w-0 text-sm leading-snug text-zinc-600">無料の RSS/API とキーワード検索・日本語特許の可否を洗う最優先タスク。</span>
+            </span>
+          </span>
+          <svg class="chevron mt-1 h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="border-t border-orange-100 px-4 pb-4 pt-2 sm:px-5 sm:pb-5">
+          <p class="text-sm leading-relaxed text-zinc-600">
+            （要約プレースホルダ）候補ごとの RSS/API の有無、検索結果のフィード化、日本語特許の取りやすさを比較するメモをここに集約します。
+          </p>
+          <div class="mt-4 overflow-x-auto rounded-xl border border-zinc-100">
+            <table class="min-w-full text-left text-xs text-zinc-700">
+              <thead class="bg-zinc-50 text-zinc-500">
+                <tr>
+                  <th class="whitespace-nowrap px-3 py-2 font-medium">ソース候補</th>
+                  <th class="px-3 py-2 font-medium">RSS</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100">
+                <tr><td class="px-3 py-2 font-medium text-zinc-800">J-PlatPat</td><td class="px-3 py-2">不明</td></tr>
+                <tr><td class="px-3 py-2 font-medium text-zinc-800">Google Patents</td><td class="px-3 py-2">要確認</td></tr>
+                <tr><td class="px-3 py-2 font-medium text-zinc-800">esp@cenet</td><td class="px-3 py-2">不明</td></tr>
+                <tr><td class="px-3 py-2 font-medium text-zinc-800">USPTO</td><td class="px-3 py-2">あり</td></tr>
+                <tr><td class="px-3 py-2 font-medium text-zinc-800">Lens.org</td><td class="px-3 py-2">API</td></tr>
+                <tr><td class="px-3 py-2 text-zinc-400">PatSnap / Derwent</td><td class="px-3 py-2 text-zinc-400">対象外</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-3 text-xs text-zinc-500">（リンク枠）調査スプレッドシート・メモ HTML などの URL を追加。</p>
+        </div>
+      </details>
+
+      <!-- 5: ★4 = 青 -->
+      <details data-relevance-stars="4" class="group rounded-2xl border border-blue-200 bg-white shadow-sm ring-1 ring-blue-200/80">
+        <summary class="flex min-h-[3.5rem] cursor-pointer list-none items-start gap-3 rounded-2xl p-4 text-left outline-none ring-zinc-400 focus-visible:ring-2 md:items-center">
+          <span class="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 md:mt-0">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-semibold text-zinc-900">特許特有の要素と要約方針</span>
+            <span class="mt-1.5 flex flex-wrap items-center gap-2 md:gap-2.5">
+              <span class="flex shrink-0 items-center gap-1 px-1.5 py-0.5 bg-blue-100 rounded text-xs text-blue-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" aria-hidden="true"></span>
+                <span>★★★★</span>
+              </span>
+              <span class="min-w-0 text-sm leading-snug text-zinc-600">出願人・番号・IPC・請求項を要約に織り込み、プロンプトを文献向けから切り替える。</span>
+            </span>
+          </span>
+          <svg class="chevron mt-1 h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="border-t border-blue-100 px-4 pb-4 pt-2 sm:px-5 sm:pb-5">
+          <p class="text-sm leading-relaxed text-zinc-600">
+            （要約プレースホルダ）メール本文では権利範囲・出願人・技術的意義が伝わるよう、Gemini プロンプトを特許向けに差し替えます。
+          </p>
+          <ul class="mt-3 space-y-2 text-sm text-zinc-700">
+            <li class="flex gap-2"><span class="text-zinc-400">・</span>出願人（企業名）</li>
+            <li class="flex gap-2"><span class="text-zinc-400">・</span>出願番号・公開番号</li>
+            <li class="flex gap-2"><span class="text-zinc-400">・</span>国際分類（IPC）</li>
+            <li class="flex gap-2"><span class="text-zinc-400">・</span>請求項（Claim）</li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- 6: ★4 = 青 -->
+      <details data-relevance-stars="4" class="group rounded-2xl border border-blue-200 bg-white shadow-sm ring-1 ring-blue-200/80">
+        <summary class="flex min-h-[3.5rem] cursor-pointer list-none items-start gap-3 rounded-2xl p-4 text-left outline-none ring-zinc-400 focus-visible:ring-2 md:items-center">
+          <span class="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 md:mt-0">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-semibold text-zinc-900">推奨作業手順</span>
+            <span class="mt-1.5 flex flex-wrap items-center gap-2 md:gap-2.5">
+              <span class="flex shrink-0 items-center gap-1 px-1.5 py-0.5 bg-blue-100 rounded text-xs text-blue-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" aria-hidden="true"></span>
+                <span>★★★★</span>
+              </span>
+              <span class="min-w-0 text-sm leading-snug text-zinc-600">ソース確定からリポジトリ複製、収集差し替え、プロンプト調整、CI までの順路。</span>
+            </span>
+          </span>
+          <svg class="chevron mt-1 h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="border-t border-blue-100 px-4 pb-4 pt-2 sm:px-5 sm:pb-5">
+          <ol class="list-decimal space-y-2 pl-5 text-sm leading-relaxed text-zinc-600">
+            <li>ソース調査（無料 RSS/API、キーワード検索、日本語特許）</li>
+            <li><code class="rounded bg-zinc-100 px-1 py-0.5 text-xs">patent-digest-tool</code> リポジトリ作成（<code class="rounded bg-zinc-100 px-1 py-0.5 text-xs">C:\Users\jpike\src\patent-digest-tool</code>）</li>
+            <li><code class="rounded bg-zinc-100 px-1 py-0.5 text-xs">collect.py</code> を特許ソース用に置換</li>
+            <li>Gemini プロンプトを特許向けに調整</li>
+            <li>ローカルテスト → GitHub → Actions 設定</li>
+          </ol>
+          <p class="mt-3 text-xs text-zinc-500">（リンク枠）タスク管理・PR・設計ドキュメントの URL を追加。</p>
+        </div>
+      </details>
+
+      <!-- 7: ★3 = 緑 -->
+      <details data-relevance-stars="3" class="group rounded-2xl border border-green-200 bg-white shadow-sm ring-1 ring-green-200/80">
+        <summary class="flex min-h-[3.5rem] cursor-pointer list-none items-start gap-3 rounded-2xl p-4 text-left outline-none ring-zinc-400 focus-visible:ring-2 md:items-center">
+          <span class="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 md:mt-0">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-base font-semibold text-zinc-900">GitHub Secrets</span>
+            <span class="mt-1.5 flex flex-wrap items-center gap-2 md:gap-2.5">
+              <span class="flex shrink-0 items-center gap-1 px-1.5 py-0.5 bg-green-100 rounded text-xs text-green-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" aria-hidden="true"></span>
+                <span>★★★</span>
+              </span>
+              <span class="min-w-0 text-sm leading-snug text-zinc-600">メール送信と任意の生成 AI 用に、Actions から参照するシークレット名の一覧。</span>
+            </span>
+          </span>
+          <svg class="chevron mt-1 h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="border-t border-green-100 px-4 pb-4 pt-2 sm:px-5 sm:pb-5">
+          <p class="text-sm leading-relaxed text-zinc-600">
+            （要約プレースホルダ）chem-digest と同じ名前のシークレットを流用する想定です。値はリポジトリの Settings に登録します。
+          </p>
+          <div class="mt-4 overflow-x-auto rounded-xl border border-zinc-100">
+            <table class="min-w-full text-left text-xs text-zinc-700">
+              <thead class="bg-zinc-50 text-zinc-500">
+                <tr>
+                  <th class="px-3 py-2 font-medium">名前</th>
+                  <th class="px-3 py-2 font-medium">用途</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100">
+                <tr><td class="whitespace-nowrap px-3 py-2 font-mono text-zinc-800">GMAIL_ADDRESS</td><td class="px-3 py-2">送信元 Gmail</td></tr>
+                <tr><td class="whitespace-nowrap px-3 py-2 font-mono text-zinc-800">GMAIL_APP_PASSWORD</td><td class="px-3 py-2">Gmail アプリパスワード</td></tr>
+                <tr><td class="whitespace-nowrap px-3 py-2 font-mono text-zinc-800">TO_ADDRESSES</td><td class="px-3 py-2">宛先（カンマ区切り）</td></tr>
+                <tr><td class="whitespace-nowrap px-3 py-2 font-mono text-zinc-800">GEMINI_API_KEY</td><td class="px-3 py-2">Gemini（任意）</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-3 text-xs text-zinc-500">（リンク枠）Secrets 設定手順の社内ドキュメント URL を追加。</p>
+        </div>
+      </details>
+    </div>
+
+    <footer class="mt-10 text-center text-xs text-zinc-400">
+      静的ページ・ネイティブ折りたたみ。ピル・枠（<code class="rounded bg-zinc-200/60 px-1">border</code>/<code class="rounded bg-zinc-200/60 px-1">ring</code>）・展開部の <code class="rounded bg-zinc-200/60 px-1">border-t</code> は <code class="rounded bg-zinc-200/60 px-1">data-relevance-stars</code>（3=緑・4=青・5=橙）と一致させる。中身の文案とリンクは後から編集してください。
+    </footer>
+  </div>
+</body>
+</html>
