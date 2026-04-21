@@ -14,7 +14,7 @@ news-digest-tool/
 │   ├── filter.py                ← キーワードフィルタ + Gemini 要約
 │   └── email_sender.py          ← HTML メール生成・送信
 └── .github/workflows/
-    └── daily.yml                ← GitHub Actions 毎日自動実行
+    └── daily.yml                ← GitHub Actions 週次自動実行（デフォルト: 金曜 07:00 JST）
 ```
 
 ## セットアップ
@@ -50,14 +50,11 @@ python src/main.py --save-html output/digest.html
 
 ## 配信スケジュール
 
-デフォルトは毎日 07:00 JST（`cron: '0 22 * * *'`）。
+デフォルトは **毎週金曜 07:00 JST**（`.github/workflows/daily.yml` の `cron: '0 22 * * 4'` … UTC 木曜 22:00）。
 
-週1に変更する場合は `.github/workflows/daily.yml` の cron を変更：
-```yaml
-- cron: '0 22 * * 0'  # 毎週日曜 07:00 JST
-```
+別の曜日・時刻にする場合は同ファイルの `cron` を変更する（[crontab.guru](https://crontab.guru/) などで UTC に換算）。
 
-その場合は `config.yaml` の `days_back` も `7` に変更すること。
+週次配信では `config.yaml` の `delivery.days_back` を `7` にしておくこと（日次に戻すなら `1` と cron を毎日実行に合わせる）。
 
 ## カスタマイズ
 
