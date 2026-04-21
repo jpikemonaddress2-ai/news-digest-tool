@@ -68,53 +68,32 @@ def _fmt_date(dt: datetime) -> str:
     return f"{jst.year}年{jst.month}月{jst.day}日（{w}）"
 
 
-def _article_table(article: Article) -> str:
-    """1件の記事をメール用シンプルテーブルで返す（タイトル＋★のみ）"""
-    score = article.score or 0
-    colors = CARD_COLORS.get(score, CARD_COLORS[1])
-    title_escaped = html.escape(article.title)
-    source_escaped = html.escape(article.source_name)
-
-    return f"""
-<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
-<table width="100%" cellpadding="0" cellspacing="0"
-       style="border-collapse:collapse;margin-bottom:8px;border:1px solid #e8e8e8;">
-  <tr>
-    <td width="4" style="background-color:{colors['border']};font-size:0;line-height:0;">&nbsp;</td>
-    <td style="padding:0;vertical-align:top;">
-      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-        <tr>
-          <td style="padding:6px 12px;background-color:{colors['header_bg']};
-                     font-size:10px;font-weight:600;color:#595959;
-                     border-bottom:1px solid #e8e8e8;">
-            {source_escaped}
-          </td>
-          <td style="padding:6px 12px;background-color:{colors['header_bg']};
-                     font-size:11px;font-weight:700;color:{colors['star_color']};
-                     text-align:right;white-space:nowrap;
-                     border-bottom:1px solid #e8e8e8;">
-            {colors['stars']}
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2" style="padding:8px 12px;font-size:13px;font-weight:600;
-                                 color:#1d1d1f;line-height:1.5;">
-            {title_escaped}
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<!--[if mso]></td></tr></table><![endif]-->"""
+def _format_summary_for_email(raw: str) -> str:
+    """プレーンテキスト要約を Outlook 向け HTML 断片にする（空行1つで最大3段落）。"""
+    text = (raw or "").strip()
+    if not text:
+        return (
+            '<p style="margin:0;font-size:13px;color:#9ca3af;">'
+            "（要約なし）"
+            "</p>"
+        )
+    chunks = [c.strip() for c in text.split("\n\n") if c.strip()][:3]
+    p_style = "margin:0 0 10px;font-size:13px;color:#434343;line-height:1.7;"
+    parts: list[str] = []
+    for ch in chunks:
+        esc = html.escape(ch).replace("\n", "<br>")
+        parts.append(f'<p style="{p_style}">{esc}</p>')
+    return "".join(parts) if parts else (
+        '<p style="margin:0;font-size:13px;color:#9ca3af;">（要約なし）</p>'
+    )
 
 
 def _digest_article_table(article: Article) -> str:
-    """1件の記事を図解ページ用テーブルで返す（要約・リンク付き詳細版）"""
+    """1件の記事を Outlook 互換テーブルで返す（要約・リンク付きフルカード）。"""
     score = article.score or 0
     colors = CARD_COLORS.get(score, CARD_COLORS[1])
-    raw_summary = article.ai_summary or article.summary[:400]
-    summary = html.escape(raw_summary)
+    raw_summary = (article.ai_summary or article.summary)[:6000]
+    summary = _format_summary_for_email(raw_summary)
     title_escaped = html.escape(article.title)
     source_escaped = html.escape(article.source_name)
 
@@ -175,106 +154,8 @@ def build_html(
     report_date: datetime,
     total_collected: int = 0,
 ) -> str:
-    """Outlook 対応 HTML メール本文を構築する（タイトル＋★のシンプル版）"""
-    date_str = _fmt_date(report_date)
-    count = len(articles)
-    min_score = config["delivery"].get("min_score", 3)
-    subject_prefix = config.get("email", {}).get("subject_prefix", "化学業界ニュースダイジェスト")
-    days_back = config["delivery"].get("days_back", 7)
-    freq_label = "毎日" if days_back == 1 else f"過去{days_back}日分"
-
-    source_count = len(config.get("rss_feeds", []))
-    collected_str = str(total_collected) if total_collected > 0 else "-"
-    article_tables = "".join(_article_table(a) for a in articles)
-
-    return f"""<!DOCTYPE html>
-<html lang="ja" xmlns:v="urn:schemas-microsoft-com:vml"
-      xmlns:o="urn:schemas-microsoft-com:office:office">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<!--[if mso]>
-<noscript>
-<xml><o:OfficeDocumentSettings>
-  <o:PixelsPerInch>96</o:PixelsPerInch>
-</o:OfficeDocumentSettings></xml>
-</noscript>
-<![endif]-->
-<title>{subject_prefix} {date_str}</title>
-</head>
-<body style="margin:0;padding:0;background-color:#f5f5f5;
-             font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;background-color:#f5f5f5;">
-  <tr>
-    <td align="center" style="padding:20px 8px;">
-      <table width="600" cellpadding="0" cellspacing="0"
-             style="border-collapse:collapse;max-width:600px;width:100%;
-                    background-color:#ffffff;border:1px solid #e8e8e8;">
-        <tr>
-          <td style="background-color:#059669;padding:20px;">
-            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-              <tr>
-                <td style="vertical-align:middle;">
-                  <p style="margin:0 0 2px;font-size:11px;color:#a7f3d0;">{subject_prefix}</p>
-                  <h1 style="margin:0;font-size:18px;font-weight:700;color:#ffffff;line-height:1.4;">{date_str}</h1>
-                </td>
-                <td style="text-align:right;vertical-align:middle;white-space:nowrap;">
-                  <span style="font-size:24px;font-weight:700;color:#ffffff;">{count}</span>
-                  <span style="font-size:12px;color:#a7f3d0;display:block;">件をピックアップ</span>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td style="background-color:#ecfdf5;border-bottom:1px solid #d1fae5;padding:0;">
-            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-              <tr>
-                <td width="33%" style="padding:10px 0;text-align:center;border-right:1px solid #d1fae5;">
-                  <div style="font-size:18px;font-weight:700;color:#059669;">{source_count}</div>
-                  <div style="font-size:10px;color:#6b7280;margin-top:2px;">ソース</div>
-                </td>
-                <td width="34%" style="padding:10px 0;text-align:center;border-right:1px solid #d1fae5;">
-                  <div style="font-size:18px;font-weight:700;color:#059669;">{collected_str}</div>
-                  <div style="font-size:10px;color:#6b7280;margin-top:2px;">収集件数</div>
-                </td>
-                <td width="33%" style="padding:10px 0;text-align:center;">
-                  <div style="font-size:18px;font-weight:700;color:#059669;">{count}</div>
-                  <div style="font-size:10px;color:#6b7280;margin-top:2px;">配信件数</div>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:12px 16px 8px;">
-            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-              <tr>
-                <td style="font-size:13px;font-weight:700;color:#1d1d1f;">★ ピックアップ（★{min_score}以上）</td>
-                <td style="text-align:right;font-size:10px;color:#9ca3af;">{freq_label}</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:0 16px 12px;">
-            {article_tables}
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:14px 20px;background-color:#f9fafb;border-top:1px solid #e8e8e8;text-align:center;">
-            <p style="margin:0;font-size:10px;color:#d1d5db;">
-              {freq_label} 自動配信 by GitHub Actions
-            </p>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-</body>
-</html>"""
+    """Outlook 対応 HTML メール本文（キーワード・要約・リンク付きフル版）。"""
+    return build_digest_html(articles, keywords, config, report_date, total_collected)
 
 
 def build_digest_html(
@@ -437,12 +318,77 @@ def build_digest_html(
 </html>"""
 
 
+def build_plain_digest(
+    articles: list[Article],
+    keywords: list[str],
+    config: dict,
+    report_date: datetime,
+    total_collected: int = 0,
+) -> str:
+    """multipart/alternative 用プレーン本文（HTML と同じ情報を簡略表記）。"""
+    date_str = _fmt_date(report_date)
+    count = len(articles)
+    min_score = config["delivery"].get("min_score", 3)
+    subject_prefix = config.get("email", {}).get("subject_prefix", "化学業界ニュースダイジェスト")
+    days_back = config["delivery"].get("days_back", 7)
+    freq_label = "毎日" if days_back == 1 else f"過去{days_back}日分"
+    source_count = len(config.get("rss_feeds", []))
+    collected_str = str(total_collected) if total_collected > 0 else "-"
+    kw_line = "、".join(keywords[:20])
+
+    lines: list[str] = [
+        f"{subject_prefix} {date_str}",
+        f"ピックアップ {count} 件（★{min_score}以上のみ配信）",
+        f"ソース数 {source_count} / 収集件数 {collected_str} / 配信件数 {count}",
+        f"{freq_label} 自動配信 by GitHub Actions",
+        "",
+        "関心キーワード",
+        kw_line,
+        "",
+        "===== 記事 =====",
+        "",
+    ]
+    for a in articles:
+        score = a.score or 0
+        stars = CARD_COLORS.get(score, CARD_COLORS[1])["stars"]
+        raw_summary = (a.ai_summary or a.summary or "").strip()[:2000]
+        summary = raw_summary if raw_summary else "（要約なし）"
+        lines.extend(
+            [
+                f"【{a.source_name}】 {stars}",
+                a.title,
+                a.url,
+                "",
+                summary,
+                "",
+                "---",
+                "",
+            ]
+        )
+    lines.append("キーワード・配信設定の変更は config.yaml を編集してください。")
+    return "\n".join(lines)
+
+
+def build_empty_plain(config: dict, report_date: datetime, total_collected: int) -> str:
+    """配信0件時のプレーン本文。"""
+    subject_prefix = config.get("email", {}).get("subject_prefix", "雑学ニュースダイジェスト")
+    date_str = _fmt_date(report_date)
+    min_score = config["delivery"].get("min_score", 3)
+    return (
+        f"{subject_prefix} {date_str}\n\n"
+        "本日の配信対象記事はありませんでした。\n"
+        f"{total_collected} 件を収集しましたが、★{min_score}以上に該当する記事がありませんでした。\n\n"
+        "自動配信システム by GitHub Actions\n"
+    )
+
+
 def send_email(
     html_body: str,
     subject: str,
     config: dict,
+    plain_body: str,
 ) -> None:
-    """Gmail SMTP でHTMLメールを送信する"""
+    """Gmail SMTP で multipart/alternative（plain → html）メールを送信する"""
     email_cfg = config.get("email", {})
     from_addr = os.environ.get(email_cfg.get("from_env", "GMAIL_ADDRESS"), "")
     password = os.environ.get(email_cfg.get("password_env", "GMAIL_APP_PASSWORD"), "")
@@ -460,6 +406,8 @@ def send_email(
     msg["Subject"] = subject
     msg["From"] = from_addr
     msg["To"] = ", ".join(to_addrs)
+    # RFC 2046: 同一内容の低忠実度パートを先に、高忠実度（HTML）を後に付ける
+    msg.attach(MIMEText(plain_body, "plain", "utf-8"))
     msg.attach(MIMEText(html_body, "html", "utf-8"))
 
     logger.info("メール送信中 → %s", to_addrs)
@@ -527,9 +475,11 @@ def deliver(articles: list[Article], config: dict, total_collected: int = 0) -> 
 
     if articles:
         html_body = build_html(articles, keywords, config, now, total_collected)
+        plain_body = build_plain_digest(articles, keywords, config, now, total_collected)
         subject = f"{subject_prefix} {date_str}（{len(articles)} 件）"
     else:
         html_body = build_empty_html(config, now, total_collected)
+        plain_body = build_empty_plain(config, now, total_collected)
         subject = f"{subject_prefix} {date_str}（本日は該当なし）"
 
-    send_email(html_body, subject, config)
+    send_email(html_body, subject, config, plain_body)

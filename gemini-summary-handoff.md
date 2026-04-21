@@ -45,5 +45,7 @@ UI は output/patent-digest-handoff-page.html の規約に合わせる。
 
 ## メモ
 
+- **確定仕様（入出力・★・プロンプト全文）**: [docs/gemini-digest-spec.md](docs/gemini-digest-spec.md)
+- **配信メール**: Outlook 互換の **テーブルレイアウト・インライン CSS のフル HTML 本文**（要約・キーワード・記事リンク付き）。`src/email_sender.build_html` は `build_digest_html` と同型。
 - 外観・Tailwind CDN・静的単一 HTML は **確定済み**。次は **要約品質と生成パイプライン**がボトルネック。
 - `digest-page-handoff.md` がリポジトリ内にある場合は、既存の digest 生成フローと矛盾しないよう併読すること。
