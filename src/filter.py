@@ -105,20 +105,23 @@ def ai_score_filter(
 
 def _build_summary_prompt(article: Article, keywords: list[str]) -> str:
     keyword_str = "、".join(keywords[:8])
-    return f"""あなたは幅広い話題を読者に楽しく届けるニュースキュレーターです。
-以下の記事について、読者が「読んでよかった」と思えるような紹介文を日本語で書いてください。
+    score = article.score or 0
+    return f"""あなたは化学・石油化学・材料まわりの業界ニュースをキュレーションする編集者です。
+以下の記事を、新入社員にも通じる日本語の紹介文にしてください。
 
-## 書き方のルール
-- 全体で3〜4文（読むのに10〜15秒程度）
-- 1文目：この記事が「{keyword_str}」とどう関わるかを具体的に、または記事の核心を一言で示す
-- 2〜3文目：記事が伝えたいことを端的に述べる（数字・固有名詞があれば積極的に使う）
-- 最後の1文：なぜ面白いか、自分の生活にどう関係するか、を一言添える
-- 「〜です。〜ます。」調で書く。箇条書き・見出しは使わない
-- 専門用語は避け、誰でも読みやすい言葉を使う
+## 書き方
+- 長さの目安: 全体で280〜450字程度（やや長くてよい）。最大2段落。段落の区切りは空行1行のみ（他の記号で段落分けしない）。
+- 関心テーマとの関係: 「{keyword_str}」とどう結びつくかを、無理のない範囲で触れる。
+- 専門用語は括弧や短い一文で噛み砕く。入力にない数字・固有名詞・因果を捏造しない。推測は「〜の可能性があります」に1回まで。
+- 口調はフレンドリー（です・ます可）。業界・相場・制度などへの軽いユーモアや皮肉は1文まで。個人や特定企業を貶さない。
+- 箇条書き・見出し記号は使わない。
 
-## 記事情報
+## 関連度（編集メモ）
+キーワードマッチの強さは ★{score} 相当（5が最も直結）。星と矛盾する過大な煽りは避ける。
+
+## 記事
 タイトル: {article.title}
-原文要約: {article.summary[:600]}
+抜粋: {article.summary[:900]}
 
 紹介文のみ出力してください。"""
 
@@ -162,7 +165,7 @@ def add_ai_summaries(articles: list[Article], config: dict) -> None:
                     contents=prompt,
                     config=types.GenerateContentConfig(
                         temperature=0.7,
-                        max_output_tokens=400,
+                        max_output_tokens=1024,
                         thinking_config=types.ThinkingConfig(thinking_budget=0),
                     ),
                 )

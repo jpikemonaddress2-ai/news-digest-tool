@@ -2,7 +2,7 @@ name: news-digest-daily
 
 on:
   schedule:
-    - cron: '0 22 * * 0'  # 毎週月曜 07:00 JST（UTC 日曜 22:00）
+    - cron: '0 22 * * 4'  # 毎週金曜 07:00 JST（UTC 木曜 22:00）
   workflow_dispatch:
     inputs:
       dry_run:
