@@ -28,7 +28,18 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="雑学ニュースダイジェスト 自動配信ツール")
+    epilog = (
+        "成果物:\n"
+        "  output/digest-YYYY-MM-DD.html … 図解 HTML（実行のたびに常に出力）。\n"
+        "  --save-html FILE … メール送信用 HTML を FILE に保存（この場合も SMTP は送らない）。\n"
+        "\n"
+        "メール送信は --dry-run または --save-html のときスキップされる。"
+    )
+    parser = argparse.ArgumentParser(
+        description="化学業界ニュースダイジェスト自動配信ツール（RSS→フィルタ→要約→メール）",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=epilog,
+    )
     parser.add_argument(
         "--config",
         default="config.yaml",
@@ -37,12 +48,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="メール送信をスキップして内容だけ確認する",
+        help="メール送信をスキップする（図解 HTML は通常どおり output/ に出力）",
     )
     parser.add_argument(
         "--save-html",
         metavar="FILE",
-        help="生成したHTMLをファイルに保存する（デバッグ用）",
+        help="メール送信用 HTML を FILE に保存し、メール送信はスキップする",
     )
     return parser.parse_args()
 
@@ -51,7 +62,7 @@ def main() -> None:
     args = parse_args()
 
     logger.info("=" * 50)
-    logger.info("雑学ニュースダイジェスト 自動配信ツール 起動")
+    logger.info("化学業界ニュースダイジェスト 自動配信ツール 起動")
     logger.info("設定ファイル: %s", args.config)
     logger.info("=" * 50)
 

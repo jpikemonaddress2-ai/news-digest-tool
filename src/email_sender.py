@@ -16,6 +16,7 @@ import logging
 import os
 import smtplib
 from datetime import datetime, timezone, timedelta
+from typing import Optional
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -68,6 +69,15 @@ def _fmt_date(dt: datetime) -> str:
     return f"{jst.year}年{jst.month}月{jst.day}日（{w}）"
 
 
+def _fmt_article_published(pub: Optional[datetime]) -> str:
+    """記事カード用の公開日表示（欠損時はダッシュ）。"""
+    if pub is None:
+        return "—"
+    if pub.tzinfo is None:
+        pub = pub.replace(tzinfo=timezone.utc)
+    return _fmt_date(pub)
+
+
 def _format_summary_for_email(raw: str) -> str:
     """プレーンテキスト要約を Outlook 向け HTML 断片にする（空行1つで最大3段落）。"""
     text = (raw or "").strip()
@@ -96,6 +106,7 @@ def _digest_article_table(article: Article) -> str:
     summary = _format_summary_for_email(raw_summary)
     title_escaped = html.escape(article.title)
     source_escaped = html.escape(article.source_name)
+    pub_line = html.escape(_fmt_article_published(article.published))
 
     return f"""
 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
@@ -112,10 +123,16 @@ def _digest_article_table(article: Article) -> str:
             {source_escaped}
           </td>
           <td style="padding:8px 12px;background-color:{colors['header_bg']};
-                     font-size:12px;font-weight:700;color:{colors['star_color']};
-                     text-align:right;white-space:nowrap;
+                     text-align:right;vertical-align:top;
                      border-bottom:1px solid #e8e8e8;">
-            {colors['stars']}
+            <div style="font-size:10px;font-weight:500;color:#8c8c8c;line-height:1.3;
+                        margin:0 0 3px;white-space:nowrap;">
+              {pub_line}
+            </div>
+            <div style="font-size:12px;font-weight:700;color:{colors['star_color']};
+                        line-height:1.2;white-space:nowrap;">
+              {colors['stars']}
+            </div>
           </td>
         </tr>
         <tr>
@@ -266,9 +283,9 @@ def build_digest_html(
             <p style="margin:0 0 8px;line-height:1.8;">{kw_spans}</p>
             <p style="margin:0;font-size:11px;color:#9ca3af;">
               ★ 関連度:
-              <span style="color:#d4380d;font-weight:600;">★★★★★ ドンピシャ</span> &nbsp;
-              <span style="color:#1677ff;font-weight:600;">★★★★☆ 強く関連</span> &nbsp;
-              <span style="color:#389e0d;font-weight:600;">★★★☆☆ 部分的（★{min_score}以上を配信）</span>
+              <span style="color:#d4380d;font-weight:600;">★★★★★ 完全一致</span> &nbsp;
+              <span style="color:#1677ff;font-weight:600;">★★★★☆ 高関連</span> &nbsp;
+              <span style="color:#389e0d;font-weight:600;">★★★☆☆ 部分一致（★{min_score}以上を配信）</span>
             </p>
           </td>
         </tr>
@@ -371,7 +388,7 @@ def build_plain_digest(
 
 def build_empty_plain(config: dict, report_date: datetime, total_collected: int) -> str:
     """配信0件時のプレーン本文。"""
-    subject_prefix = config.get("email", {}).get("subject_prefix", "雑学ニュースダイジェスト")
+    subject_prefix = config.get("email", {}).get("subject_prefix", "化学業界ニュースダイジェスト")
     date_str = _fmt_date(report_date)
     min_score = config["delivery"].get("min_score", 3)
     return (
@@ -419,7 +436,7 @@ def send_email(
 
 def build_empty_html(config: dict, report_date: datetime, total_collected: int) -> str:
     """配信対象0件のときに送る通知メール本文を構築する"""
-    subject_prefix = config.get("email", {}).get("subject_prefix", "雑学ニュースダイジェスト")
+    subject_prefix = config.get("email", {}).get("subject_prefix", "化学業界ニュースダイジェスト")
     date_str = _fmt_date(report_date)
     min_score = config["delivery"].get("min_score", 3)
 
@@ -469,7 +486,7 @@ def deliver(articles: list[Article], config: dict, total_collected: int = 0) -> 
     keywords = config.get("interest_keywords", [])
     now = datetime.now(tz=timezone.utc)
 
-    subject_prefix = config.get("email", {}).get("subject_prefix", "雑学ニュースダイジェスト")
+    subject_prefix = config.get("email", {}).get("subject_prefix", "化学業界ニュースダイジェスト")
     dt = now.astimezone(JST)
     date_str = f"{dt.year}/{dt.month}/{dt.day}"
 

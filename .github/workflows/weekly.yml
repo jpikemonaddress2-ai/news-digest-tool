@@ -1,4 +1,4 @@
-name: news-digest-daily
+﻿name: news-digest-weekly
 
 on:
   schedule:

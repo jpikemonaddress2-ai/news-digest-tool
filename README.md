@@ -1,6 +1,6 @@
-# 雑学ニュースダイジェスト
+# 化学業界ニュースダイジェスト
 
-RSSフィードからニュース・雑学記事を収集し、Gemini で日本語要約を付けてメール配信する自動ツール。
+RSS フィードからニュース記事を収集し、キーワードで絞り込み、Gemini で日本語要約を付けてメール配信する自動ツール（`config.yaml` で対象トピックを変更可能）。
 
 ## 構成
 
@@ -14,8 +14,10 @@ news-digest-tool/
 │   ├── filter.py                ← キーワードフィルタ + Gemini 要約
 │   └── email_sender.py          ← HTML メール生成・送信
 └── .github/workflows/
-    └── daily.yml                ← GitHub Actions 週次自動実行（デフォルト: 金曜 07:00 JST）
+    └── weekly.yml               ← GitHub Actions 週次自動実行（デフォルト: 金曜 07:00 JST）
 ```
+
+ローカル実行は **リポジトリのルート**（`config.yaml` があるディレクトリ）をカレントにしてから `python src/main.py` を実行してください。
 
 ## セットアップ
 
@@ -25,18 +27,29 @@ news-digest-tool/
 pip install -r requirements.txt
 ```
 
-### 2. ドライラン（メール送信なし）
+### 2. 実行するとできること（成果物）
+
+| 出力 | いつできるか | 内容 |
+|------|--------------|------|
+| `output/digest-YYYY-MM-DD.html` | **毎回**（送信の有無に関係なく） | 図解レイアウトの詳細 HTML（メール本文と同系の見出し・統計付き） |
+| `--save-html` で指定したパス | そのオプションを付けたときだけ | メール送信用 HTML（例: `output/digest.html`） |
+
+**メール送信がスキップされる条件:** `--dry-run` を付けたとき、または `--save-html` を付けたとき（いずれも SMTP は送らない）。
+
+### 3. ドライラン（メール送信なし）
 
 ```bash
 cd news-digest-tool
 python src/main.py --dry-run
 ```
 
-### 3. HTML確認
+実行後、`output/digest-YYYY-MM-DD.html` をブラウザで開いてレイアウトを確認できます。
+
+### 4. メール用 HTML をファイルに保存
 
 ```bash
 python src/main.py --save-html output/digest.html
-# output/digest.html をブラウザで開く
+# output/digest.html をブラウザで開く（この場合もメールは送られません）
 ```
 
 ## GitHub Secrets の設定
@@ -50,7 +63,7 @@ python src/main.py --save-html output/digest.html
 
 ## 配信スケジュール
 
-デフォルトは **毎週金曜 07:00 JST**（`.github/workflows/daily.yml` の `cron: '0 22 * * 4'` … UTC 木曜 22:00）。
+デフォルトは **毎週金曜 07:00 JST**（`.github/workflows/weekly.yml` の `cron: '0 22 * * 4'` … UTC 木曜 22:00）。
 
 別の曜日・時刻にする場合は同ファイルの `cron` を変更する（[crontab.guru](https://crontab.guru/) などで UTC に換算）。
 
