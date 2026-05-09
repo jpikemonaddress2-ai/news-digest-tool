@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -60,6 +61,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    is_test_mode = args.dry_run or bool(args.save_html)
 
     logger.info("=" * 50)
     logger.info("化学業界ニュースダイジェスト 自動配信ツール 起動")
@@ -69,6 +71,10 @@ def main() -> None:
     # 1. 設定読み込み
     config = load_config(args.config)
     logger.info("設定読み込み完了")
+
+    if is_test_mode and os.environ.get("GEMINI_API_KEY"):
+        os.environ.pop("GEMINI_API_KEY", None)
+        logger.info("テスト実行のため Gemini 要約を無効化しました")
 
     # 2. 情報収集
     logger.info("--- 情報収集フェーズ ---")
