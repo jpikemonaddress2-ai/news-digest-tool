@@ -9,11 +9,65 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import time
 
 from collect import Article
 
 logger = logging.getLogger(__name__)
+
+_SUB_DIGITS = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+_SUP_DIGITS = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
+
+
+def _normalize_scientific_output(text: str) -> str:
+    """
+    Gemini が返した HTML 断片やよくある LaTeX を Unicode に寄せる。
+    メール HTML は数式エンジンを使わないため、escape 前に適用する。
+    """
+    if not text:
+        return text
+
+    def _sub_tag(m: re.Match[str]) -> str:
+        inner = m.group(1)
+        return inner.translate(_SUB_DIGITS) if inner.isdigit() else m.group(0)
+
+    def _sup_tag(m: re.Match[str]) -> str:
+        inner = m.group(1)
+        return inner.translate(_SUP_DIGITS) if inner.isdigit() else m.group(0)
+
+    out = re.sub(r"<sub>([0-9]+)</sub>", _sub_tag, text, flags=re.IGNORECASE)
+    out = re.sub(r"<sup>([0-9]+)</sup>", _sup_tag, out, flags=re.IGNORECASE)
+
+    latex_pairs = (
+        (r"\\lesssim", "≲"),
+        (r"\\gtrsim", "≳"),
+        (r"\\leqslant", "≤"),
+        (r"\\geqslant", "≥"),
+        (r"\\leq", "≤"),
+        (r"\\geq", "≥"),
+        (r"\\approx", "≈"),
+        (r"\\neq", "≠"),
+        (r"\\pm", "±"),
+        (r"\\times", "×"),
+        (r"\\cdot", "·"),
+        (r"\\ldots", "…"),
+        (r"\\infty", "∞"),
+        (r"\\alpha", "α"),
+        (r"\\beta", "β"),
+        (r"\\gamma", "γ"),
+    )
+    for pat, ch in latex_pairs:
+        out = re.sub(pat, ch, out)
+
+    for _ in range(16):
+        next_out = re.sub(r"\$([^$]+)\$", r"\1", out)
+        if next_out == out:
+            break
+        out = next_out
+    out = out.replace("$", "")
+
+    return out
 
 
 def keyword_filter(articles: list[Article], keywords: list[str]) -> list[Article]:
@@ -116,6 +170,11 @@ def _build_summary_prompt(article: Article, keywords: list[str]) -> str:
 - 口調はフレンドリー（です・ます可）。業界・相場・制度などへの軽いユーモアや皮肉は1文まで。個人や特定企業を貶さない。
 - 箇条書き・見出し記号は使わない。
 
+## 数式・化学式の表記（必須）
+- 化学式・単位・不等号などは **Unicode のプレーンテキストのみ**で書く（例: CO₂、H⁺、10³、≤ ≥ ≈ ±、℃ または °C）。
+- **禁止**: LaTeX（$ や \\leq、\\lesssim など）、HTML タグ（<sub>、<sup> など）。配信先の HTML メールでは数式として描画されず、そのまま見えてしまう。
+- 複雑な式は日本語で言い換える（例: 「レイノルズ数がおおよそ 1000 以下」「Re が千前後」）。
+
 ## 関連度（編集メモ）
 キーワードマッチの強さは ★{score} 相当（5が最も直結）。星と矛盾する過大な煽りは避ける。
 
@@ -171,7 +230,7 @@ def add_ai_summaries(articles: list[Article], config: dict) -> None:
                 )
                 japanese_summary = response.text.strip()
                 if japanese_summary:
-                    article.ai_summary = japanese_summary
+                    article.ai_summary = _normalize_scientific_output(japanese_summary)
                     success = True
                     break
             except Exception as exc:
