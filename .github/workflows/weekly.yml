@@ -1,8 +1,10 @@
 name: news-digest-weekly
 
 on:
-  schedule:
-    - cron: '0 22 * * 4'   # 毎週金曜 07:00 JST（木曜 22:00 UTC）
+  # digest-tools リポジトリ（旧 patent-digest-tool）へ移行したため定期実行を停止。
+  # 二重配信を避けるためコメントアウトしている。手動実行は残してある。
+  # schedule:
+  #   - cron: '0 22 * * 4'   # 毎週金曜 07:00 JST（木曜 22:00 UTC）
   workflow_dispatch:
     inputs:
       dry_run:
